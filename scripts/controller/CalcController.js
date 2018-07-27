@@ -1,22 +1,24 @@
 class CalcController{
     
     constructor(){
-        this._operation = []
-        this._locale = "pt-BR"
-        this._displayCalcEl = document.querySelector("#display")
-        this._dateEl        = document.querySelector("#data")
-        this._timeEl        = document.querySelector("#hora")     
+
+        this._operation     = []    
+        this._locale        = "pt-BR"                            // variavel de localização do navegador
+        this._displayCalcEl = document.querySelector("#display") // salva os elementos do id #display no atributo _displayCalcEl
+        this._dateEl        = document.querySelector("#data")    // salva os elementos do id #data no atributo _dateEl
+        this._timeEl        = document.querySelector("#hora")    // salva os elementos do id #hora no atributo _timeEl
         this._currentDate 
-        this.initilize()
-        this.initButtonsEvents()
+        this.initilize()                                         // inicializa data e hora no display
+        this.initButtonsEvents()                                 // inicializa o metodo
 
     }
 
     initilize(){
-        this.setDisplayDateTime()
+        this.setDisplayDateTime() //mostra data e hora no display
         setInterval(()=>{
-            this.setDisplayDateTime()
-        },1000)
+            this.setDisplayDateTime() // atualiza data e hora 1 vez a cada segundo
+        },1000) // tempo em milisegundos 
+        
     }
 
     addEventListenerAll(element, events, fn){
@@ -33,10 +35,53 @@ class CalcController{
         this._operation.pop()
     }
 
-    addOperation(value){
-        this._operation.push(value)
-        console.log( this._operation)
+    getLastOperation(){
+        return this._operation[this._operation.length -1]
+        //console.log(this._operation[this._operation.length -1])
     }
+
+    setLastOperation(value){
+
+        return this._operation[this._operation.length - 1] = value
+
+    }
+
+    isOperator(value){
+        return (['+', '-', '*', '%', '/'].indexOf(value) > -1)
+    }
+
+    addOperation(value){
+        //console.log('____addOperation____')
+        
+        if(isNaN(this.getLastOperation())){
+            //console.log('addOperation 1º if', typeof this.getLastOperation())
+            if(this.isOperator(value)){
+                //troca operador
+                this.setLastOperation(value)
+                console.log('addOperation 2º if', value)
+            }else if(isNaN(value)){
+
+                 console.log('addOperation 1º else if', value)
+             }else{
+                 console.log('addOperation 1º else', typeof value)
+                 this._operation.push(parseInt(value))
+             }
+
+         }else if(isNaN(value)){
+                if(isNaN(this.getLastOperation())){
+                    this.getLastOperation()
+                }else{
+                    this._operation.push(value)
+                }
+         }else{
+            let newValue = this.getLastOperation().toString() + value.toString()
+            this.setLastOperation(parseInt(newValue))
+            console.log('addOperation 2º else', value)
+        }
+
+        console.log("addOperation", this._operation)
+    }
+
 
     setError(){
         this.displayCalc = "error"
@@ -53,23 +98,33 @@ class CalcController{
                 break
 
             case 'soma':
-                
+                this.addOperation('+')
+                console.log('operador')
                 break
 
             case 'subtracao':
-                
+                this.addOperation('-')
+                console.log('operador')
                 break
 
             case 'divisao':
-                
+                this.addOperation('/')
+                console.log('operador')
                 break
 
             case 'multiplicacao':
-                
+                this.addOperation('*')
+                console.log('operador')
                 break
 
             case 'porcento':
-                
+                this.addOperation('%')
+                console.log('operador')
+                break
+            
+            case 'ponto':
+                this.addOperation('.')
+                console.log('operador')
                 break
 
             case 'igual':
@@ -87,6 +142,7 @@ class CalcController{
             case '8':
             case '9':
                 this.addOperation(parseInt(value))
+                //console.log('numero', typeof value)
                 break
 
 
@@ -154,4 +210,6 @@ class CalcController{
     set currentDate(value){
         this._currentDate = value
     }
+
+   
 }
