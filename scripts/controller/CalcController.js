@@ -50,6 +50,33 @@ class CalcController{
         return (['+', '-', '*', '%', '/'].indexOf(value) > -1)
     }
 
+    pushOperation(value){
+        this._operation.push(value)
+        if(this._operation.length > 3){
+            
+            this.calc()
+            console.log(this._operation)
+        }
+    }
+
+    calc(){
+        let last = this._operation.pop()
+        let result = eval(this._operation.join(""))
+        this._operation = [result, last]
+        this.setLastNumberToDisplay()
+    }
+
+    setLastNumberToDisplay(){
+        let lastNaumber
+        for(let i = this._operation.length-1; i>=0; i--){
+            if(!this.isOperator(this._operation[i])){
+                lastNaumber = this._operation[i]
+                break
+            }
+        }
+        this.displayCalc = lastNaumber
+    }
+
     addOperation(value){
         //console.log('____addOperation____')
         
@@ -63,23 +90,26 @@ class CalcController{
 
                  console.log('addOperation 1º else if', value)
              }else{
-                 console.log('addOperation 1º else', typeof value)
-                 this._operation.push(parseInt(value))
+                 //console.log('addOperation 1º else', typeof value)
+                 this.pushOperation(parseInt(value))
+                 this.setLastNumberToDisplay()
              }
 
          }else if(isNaN(value)){
                 if(isNaN(this.getLastOperation())){
                     this.getLastOperation()
                 }else{
-                    this._operation.push(value)
+                    this.pushOperation(value)
                 }
          }else{
             let newValue = this.getLastOperation().toString() + value.toString()
             this.setLastOperation(parseInt(newValue))
-            console.log('addOperation 2º else', value)
+            //console.log('addOperation 2º else', value)
+            // atualiza dispplay
+            this.setLastNumberToDisplay()
         }
 
-        console.log("addOperation", this._operation)
+        //console.log("addOperation", this._operation)
     }
 
 
@@ -99,32 +129,32 @@ class CalcController{
 
             case 'soma':
                 this.addOperation('+')
-                console.log('operador')
+                //console.log('operador')
                 break
 
             case 'subtracao':
                 this.addOperation('-')
-                console.log('operador')
+                //console.log('operador')
                 break
 
             case 'divisao':
                 this.addOperation('/')
-                console.log('operador')
+                //console.log('operador')
                 break
 
             case 'multiplicacao':
                 this.addOperation('*')
-                console.log('operador')
+                //console.log('operador')
                 break
 
             case 'porcento':
                 this.addOperation('%')
-                console.log('operador')
+                //console.log('operador')
                 break
             
             case 'ponto':
                 this.addOperation('.')
-                console.log('operador')
+                //console.log('operador')
                 break
 
             case 'igual':
