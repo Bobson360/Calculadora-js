@@ -18,7 +18,7 @@ class CalcController{
         setInterval(()=>{
             this.setDisplayDateTime() // atualiza data e hora 1 vez a cada segundo
         },1000) // tempo em milisegundos 
-        
+        this.setLastNumberToDisplay()
     }
 
     addEventListenerAll(element, events, fn){
@@ -29,10 +29,12 @@ class CalcController{
 
     clearAll(){
         this._operation = []
+        this.setLastNumberToDisplay()
     }
 
     clearEntry(){
         this._operation.pop()
+        this.setLastNumberToDisplay()
     }
 
     getLastOperation(){
@@ -60,9 +62,21 @@ class CalcController{
     }
 
     calc(){
-        let last = this._operation.pop()
+        let last = ''
+        if(this._operation.length > 3){
+            last = this._operation.pop()
+        }
+
         let result = eval(this._operation.join(""))
-        this._operation = [result, last]
+        if(last == '%'){
+            result /= 100
+            this._operation = [result]
+        }else{
+
+            
+            this._operation = [result]
+            if(last) this._operation.push(last)
+        }
         this.setLastNumberToDisplay()
     }
 
@@ -74,6 +88,9 @@ class CalcController{
                 break
             }
         }
+
+        if(!lastNaumber) lastNaumber = 0
+
         this.displayCalc = lastNaumber
     }
 
@@ -158,7 +175,7 @@ class CalcController{
                 break
 
             case 'igual':
-                
+                this.calc()
                 break
             
             case '0':
